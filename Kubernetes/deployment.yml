@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eqd-cp1-website-deployment
+spec:
+  replicas: 2
+  selector: # you can use this block if this deployment has any dependencies to run.
+    matchLabels:
+      app: eqd-cp1-website
+  template:
+    metadata:
+      labels:
+        app: eqd-cp1-website
+    spec:
+      containers:
+        - name: website
+          image: sambhubiswakarma00/eq_devops_cp1:latest
+          ports:
+            - containerPort: 80  # Update with the actual port your application runs on
+          resources:
+            limits:
+              cpu: "0.5"   # Adjust the CPU limit as needed
+              memory: "512Mi"  # Adjust the memory limit as needed
+            requests:
+              cpu: "0.1"   # Adjust the CPU request as needed
+              memory: "256Mi"  # Adjust the memory request as needed
