@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eqd-cp1-website-deployment
+  name: myApp-deployment
 spec:
   replicas: 2
   selector: # you can use this block if this deployment has any dependencies to run.
     matchLabels:
-      app: eqd-cp1-website
+      app: myApp
   template:
     metadata:
       labels:
-        app: eqd-cp1-website
+        app: myApp
     spec:
       containers:
-        - name: website
-          image: sambhubiswakarma00/eq_devops_cp1:latest
+        - name: myApp
+          image: sambhubiswakarma00/myApp:latest
           ports:
             - containerPort: 80  # Update with the actual port your application runs on
           resources:
