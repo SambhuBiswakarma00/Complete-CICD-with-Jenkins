@@ -12,7 +12,8 @@ The CI/CD pipeline automates the process of building, testing, and deploying the
 
 
 ## AWS Setup
-![complete cicd aws architecture drawio](https://github.com/SambhuBiswakarma00/Complete-CICD-with-Jenkins/assets/142966523/d6f43b1e-adb2-4477-83e4-9ff2b146e799)
+![complete cicd aws architecture drawio (2)](https://github.com/SambhuBiswakarma00/Complete-CICD-with-Jenkins/assets/142966523/b1ee87ac-b10f-4dd8-b18f-12c22d249946)
+
 
 ## Tools and Technologies
 - Version Control: GitHub
