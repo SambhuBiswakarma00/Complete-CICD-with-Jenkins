@@ -1,0 +1,18 @@
+---
+# tasks file for toolsInstanceConfig
+- name: Installing ansible on tools Instance
+  script: installs/ansible_install.sh
+- name: Installing docker on tools Instance
+  script: installs/docker_install.sh
+- name: Installing jenkins on tools Instance
+  script: installs/jenkins_install.sh
+- name: Installing sonarqube on tools Instance
+  script: installs/sonarqube_install.sh
+- name: Installing trivy on tools Instance
+  script: installs/trivy_install.sh
+- name: Installing prometheus on tools Instance
+  script: installs/prometheus_install.sh
+- name: Installing loki on tools Instance
+  script: installs/loki_install.sh
+- name: Installing grafana on tools Instance
+  script: installs/grafana_install.sh

@@ -1,0 +1,17 @@
+- name: Installing java on kubernetes cluster nodes
+  script: installs/java_install.sh
+- name: Installing kube on kubernetes cluster nodes
+  script: installs/kube_install.sh
+
+
+# - name: Play 2, installing kubeadm on slave-1 node
+#   hosts: slave1
+#   remote_user: ubuntu
+#   become: 'yes'
+#   tasks:
+#     - name: Installing java on this slave1 node for jenkins master-slave dependencies 
+#       script: installs/java_install.sh
+#     - name: Installing kube on this prod node 
+#       script: installs/kube_install.sh 
+#     # - name: copying kubernetes files on slave-1 server   
+#     #   copy: src=../kubernetes dest=/home/ubuntu/

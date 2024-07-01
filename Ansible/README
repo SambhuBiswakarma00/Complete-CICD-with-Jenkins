@@ -1,0 +1,1 @@
+create role with command "ansible-galaxy role init <role_name>"
