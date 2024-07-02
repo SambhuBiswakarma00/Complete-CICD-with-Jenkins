@@ -227,7 +227,7 @@ resource "aws_instance" "kubeMaster" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/tools_install.sh")
+  user_data = file("Installs/kube_and_java_install.sh")
   tags = {
      Name = "kube-master"
   }
@@ -241,7 +241,7 @@ resource "aws_instance" "slave1" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/tools_install.sh")
+  user_data = file("Installs/kube_and_java_install.sh")
   tags = {
     Name = "kube-slave-1"
   }
@@ -254,7 +254,7 @@ resource "aws_instance" "slave2" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/tools_install.sh")
+  user_data = file("Installs/kube_and_java_install.sh")
   tags = {
     Name = "kube-slave-2"
   }
