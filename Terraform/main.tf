@@ -219,122 +219,132 @@ resource "aws_route_table_association" "route_table_associate_for_private_subnet
 
 # -----------------------------------------This section is for EC2 instances-----------------------------------------------------------------------------------
 
-# # Instance for k8 cluster master node
-# resource "aws_instance" "kubeMaster" {
-#   ami = "ami-06aa3f7caf3a30282"
-#   count = 1
-#   instance_type = "t2.medium"
-#   subnet_id = aws_subnet.my_private_subnet1.id
-#   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-#   key_name = "newkeypair"
-#   tags = {
-#      Name = "kube-master"
-#   }
-# }
+# Instance for k8 cluster master node
+resource "aws_instance" "kubeMaster" {
+  ami = "ami-06aa3f7caf3a30282"
+  count = 1
+  instance_type = "t2.medium"
+  subnet_id = aws_subnet.my_private_subnet1.id
+  vpc_security_group_ids = [aws_security_group.my_security_group.id]
+  key_name = "newkeypair"
+  user_data = file("Installs/tools_install.sh")
+  tags = {
+     Name = "kube-master"
+  }
+  
+}
 
-# # Instances for the k8 worker nodes
-# resource "aws_instance" "slave1" {
-#   ami = "ami-06aa3f7caf3a30282"
-#   instance_type = "t2.micro"
-#   subnet_id = aws_subnet.my_private_subnet1.id
-#   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-#   key_name = "newkeypair"
-#   tags = {
-#     Name = "kube-slave-1"
-#   }
-# }
-
-# resource "aws_instance" "slave2" {
-#   ami = "ami-06aa3f7caf3a30282"
-#   instance_type = "t2.micro"
-#   subnet_id = aws_subnet.my_private_subnet1.id
-#   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-#   key_name = "newkeypair"
-#   tags = {
-#     Name = "kube-slave-2"
-#   }
-# }
-
-
-# # Instance for the other tools required for the project like jenkins, sonarqube, trivy, prometheus, loki, grafana
-# resource "aws_instance" "tools" {
-#   ami = "ami-06aa3f7caf3a30282"
-#   instance_type = "t2.xlarge"
-#   subnet_id = aws_subnet.my_public_subnet1.id
-#   vpc_security_group_ids = [aws_security_group.my_security_group.id]
-#   key_name = "newkeypair"
-#   user_data = file("Installs/tools_install.sh")
-#   tags = {
-#     Name = "tools"
-#   }
-# }
-
-resource "aws_instance" "Demo" {
+# Instances for the k8 worker nodes
+resource "aws_instance" "slave1" {
   ami = "ami-06aa3f7caf3a30282"
   instance_type = "t2.micro"
+  subnet_id = aws_subnet.my_private_subnet1.id
+  vpc_security_group_ids = [aws_security_group.my_security_group.id]
+  key_name = "newkeypair"
+  user_data = file("Installs/tools_install.sh")
+  tags = {
+    Name = "kube-slave-1"
+  }
+  
+}
+
+resource "aws_instance" "slave2" {
+  ami = "ami-06aa3f7caf3a30282"
+  instance_type = "t2.micro"
+  subnet_id = aws_subnet.my_private_subnet1.id
+  vpc_security_group_ids = [aws_security_group.my_security_group.id]
+  key_name = "newkeypair"
+  user_data = file("Installs/tools_install.sh")
+  tags = {
+    Name = "kube-slave-2"
+  }
+  
+}
+
+
+# Instance for the other tools required for the project like jenkins, sonarqube, trivy, prometheus, loki, grafana
+resource "aws_instance" "tools" {
+  ami = "ami-06aa3f7caf3a30282"
+  instance_type = "t2.xlarge"
   subnet_id = aws_subnet.my_public_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
+  # user_data = file("Installs/tools_install.sh")
+  tags = {
+    Name = "tools"
+  }
   user_data = <<-EOF
               #!/bin/bash
-              # Log output to /var/log/user-data.log for debugging
-              exec > /var/log/user-data.log 2>&1
-
-              
-
-              # Make the secondary script executable
-              chmod +x /home/sambhu/Personal Projects/Jenkins CICD/Complete-CICD-with-Jenkins/Terraform/Installs/nginx_install.sh
-
-              # Run the secondary script
-              /home/sambhu/Personal Projects/Jenkins CICD/Complete-CICD-with-Jenkins/Terraform/Installs/nginx_install.sh
-              /home/sambhu/Personal Projects/Jenkins CICD/Complete-CICD-with-Jenkins/Terraform/Installs/jenkins_install.sh
+              echo "Setting up SSH authorized keys"
+              echo "${file("/home/sambhu/.ssh/id_rsa.pub")}" >> /home/ubuntu/.ssh/authorized_keys
+              chmod 600 /home/ubuntu/ansible_hosts
+              chown ubuntu:ubuntu /home/ubuntu/ansible_hosts
               EOF
-  tags = {
-    Name = "Demo"
+}
+
+
+# ----------------------------------------This section is for the Ansible Dynamic host file creation----------------------------------------------------------
+
+data "template_file" "ansible_hosts" {
+  template = "${file("../Ansible/Hosts/ansible_hosts.tpl")}"
+  
+  vars = {
+    public_ip = "${aws_instance.hello-virginia.public_ip}"
+    private_ip = "${aws_instance.hello-virginia.private_ip}"
+   # api_internal = "${aws_instance.dev-api-gateway-internal.private_ip}"
+  }
+}
+
+resource "null_resource" "ansible_hosts" {
+  triggers = {
+    template_rendered = "${data.template_file.ansible_hosts.rendered}"
+  }
+  provisioner "local-exec" {
+    command = "echo '${data.template_file.ansible_hosts.rendered}' > ../Ansible/Hosts/ansible_hosts"
   }
 }
 
 # -----------------------------------------This section is for ELB----------------------------------------------
 
-# # Create Elastic Load Balancer
-# resource "aws_lb" "my_alb" {
-#   name               = "my-alb"
-#   internal           = false
-#   load_balancer_type = "application"
-#   security_groups    = [aws_security_group.my_security_group.id]
-#   subnets            = [aws_subnet.my_public_subnet1.id, aws_subnet.my_public_subnet2.id] #you need to provide atleast two public subnets for alb to get created.
-# }
+# Create Elastic Load Balancer
+resource "aws_lb" "my_alb" {
+  name               = "my-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.my_security_group.id]
+  subnets            = [aws_subnet.my_public_subnet1.id, aws_subnet.my_public_subnet2.id] #you need to provide atleast two public subnets for alb to get created.
+}
 
-# # Create Target Groups
-# resource "aws_lb_target_group""webApp_tg" {
-#   name     = "slave-instances-tg"
-#   port     = 80
-#   protocol = "HTTP"
-#   vpc_id   = aws_vpc.my_vpc.id
-# }
+# Create Target Groups
+resource "aws_lb_target_group""webApp_tg" {
+  name     = "slave-instances-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.my_vpc.id
+}
 
-# # Create listener
-# resource "aws_lb_listener" "http_listener" {
-#   load_balancer_arn = aws_lb.my_alb.arn
-#   port              = 80
-#   protocol          = "HTTP"
+# Create listener
+resource "aws_lb_listener" "http_listener" {
+  load_balancer_arn = aws_lb.my_alb.arn
+  port              = 80
+  protocol          = "HTTP"
 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.webApp_tg.arn
-#   }
-# }
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.webApp_tg.arn
+  }
+}
 
-# # attach target group with actual target 1
-# resource "aws_lb_target_group_attachment" "slave1_tg_attachment" {
-#   target_group_arn = aws_lb_target_group.webApp_tg.arn
-#   target_id        = aws_instance.slave1.id
-#   port             = 80
-# }
+# attach target group with actual target 1
+resource "aws_lb_target_group_attachment" "slave1_tg_attachment" {
+  target_group_arn = aws_lb_target_group.webApp_tg.arn
+  target_id        = aws_instance.slave1.id
+  port             = 80
+}
 
-# # attach target group with actual target 2
-# resource "aws_lb_target_group_attachment" "slave2_tg_attachment" {
-#   target_group_arn = aws_lb_target_group.webApp_tg.arn
-#   target_id        = aws_instance.slave2.id
-#   port             = 80
-# }
+# attach target group with actual target 2
+resource "aws_lb_target_group_attachment" "slave2_tg_attachment" {
+  target_group_arn = aws_lb_target_group.webApp_tg.arn
+  target_id        = aws_instance.slave2.id
+  port             = 80
+}

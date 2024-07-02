@@ -1,0 +1,1 @@
+You can refer to this kubernetes official documentation page for steps for cluster creation with kubeadm. Link - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/

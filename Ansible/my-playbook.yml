@@ -3,13 +3,13 @@
   remote_user: ubuntu
   become: 'yes'
   roles:
-    - apache
+    - clusterConfiguration
 
 - hosts: nginx_server_group
   remote_user: ubuntu
   become: 'yes'
   roles:
-    - nginx
+    - toolsInstanceConfig
 
 
 
