@@ -1,11 +1,11 @@
 --- 
-- hosts: apache_server_group
+- hosts: cluster_all_nodes
   remote_user: ubuntu
   become: 'yes'
   roles:
     - clusterConfiguration
 
-- hosts: nginx_server_group
+- hosts: tools_instance
   remote_user: ubuntu
   become: 'yes'
   roles:
