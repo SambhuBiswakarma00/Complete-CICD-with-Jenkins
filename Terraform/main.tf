@@ -283,15 +283,16 @@ resource "aws_instance" "tools" {
 }
 
 
-# ----------------------------------------This section is for the Ansible Dynamic host file creation----------------------------------------------------------
+# -------This section is for the Ansible Dynamic host file creation and IP address of newly created Instances will be automatically add-----------------------------
 
 data "template_file" "ansible_hosts" {
   template = "${file("../Ansible/Hosts/ansible_hosts.tpl")}"
   
   vars = {
-    public_ip = "${aws_instance.hello-virginia.public_ip}"
-    private_ip = "${aws_instance.hello-virginia.private_ip}"
-   # api_internal = "${aws_instance.dev-api-gateway-internal.private_ip}"
+    tools_instance_public_ip = "${aws_instance.tools.public_ip}"
+    master_private_ip = "${aws_instance.kubeMaster.public_ip}"
+    slave1_private_ip = "${aws_instance.slave1.public_ip}"
+    slave2_private_ip = "${aws_instance.slave2.public_ip}"
   }
 }
 
