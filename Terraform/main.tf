@@ -222,7 +222,6 @@ resource "aws_route_table_association" "route_table_associate_for_private_subnet
 # Instance for k8 cluster master node
 resource "aws_instance" "kubeMaster" {
   ami = "ami-06aa3f7caf3a30282"
-  count = 1
   instance_type = "t2.medium"
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
