@@ -120,6 +120,13 @@ resource "aws_security_group" "my_security_group" {
     cidr_blocks = ["0.0.0.0/0"]  
     description = "Allow inbound grafana traffic"
   }
+  ingress {
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+    description = "Allow inbound kube-apiserver"
+  }
   // Outbound rules
   egress {
     from_port   = 0  

@@ -7,15 +7,13 @@ pipeline {
     }
     stages {
         stage('Git Checkout') {
-            steps {
-               git 'https://github.com/your-repo/your-project.git'
-            }
+            git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/SambhuBiswakarma00/Complete-CICD-with-Jenkins.git'
         }
 
         stage('SonarQube Analsyis') {
             steps {
                 withSonarQubeEnv('sonar') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=BoardGame -Dsonar.projectKey=BoardGame \
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=myApp -Dsonar.projectKey=myApp \
                             -Dsonar.java.binaries=. '''
                 }
             }

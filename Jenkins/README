@@ -1,0 +1,6 @@
+if you install the jenkins successfully and login to it and after that you get error "ubable to connect to jenkins", then do the following.
+
+1. Add Jenkins user to root group: sudo usermod -a -G root jenkins
+2. Make Jenkins listen to all external IPs by editing file /etc/default/jenkins and add/changing the JENKINS_LISTEN_ADDRESS="0.0.0.0"
+
+Once this is done, restart the jenkins server and then try to install plugins for jenkins.

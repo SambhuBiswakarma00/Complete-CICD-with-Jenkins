@@ -1,15 +1,15 @@
 --- 
-- hosts: cluster_all_nodes
-  remote_user: ubuntu
-  become: 'yes'
-  roles:
-    - clusterConfiguration
+# - hosts: cluster_all_nodes
+#   remote_user: ubuntu
+#   become: 'yes'
+#   roles:
+#     - clusterConfiguration
 
 - hosts: tools_instance
   remote_user: ubuntu
   become: 'yes'
   roles:
-    - toolsInstanceConfig
+    - Roles/toolsInstanceConfig
 
 
 

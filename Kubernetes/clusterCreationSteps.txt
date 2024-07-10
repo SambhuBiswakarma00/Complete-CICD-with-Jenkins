@@ -1,1 +1,64 @@
 You can refer to this kubernetes official documentation page for steps for cluster creation with kubeadm. Link - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+
+
+
+After initializing the cluster with "kubeadm init", you need to install network pods too for networking. you can use the below command
+kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+
+for Security group ports for cluster, refer below
+Master Node Ports
+Kubernetes API Server (kube-apiserver)
+
+Port: 6443
+Description: This is the main entry point for all API requests to the Kubernetes control plane.
+Protocol: TCP
+Etcd Server Client API
+
+Port: 2379-2380
+Description: Used for client communication with the etcd database.
+Protocol: TCP
+Kube Controller Manager
+
+Port: 10252
+Description: Port for the kube-controller-manager.
+Protocol: TCP
+Kube Scheduler
+
+Port: 10251
+Description: Port for the kube-scheduler.
+Protocol: TCP
+Cluster-level Logging
+
+Port: 10250
+Description: For communication between the kubelet and the API server.
+Protocol: TCP
+Cluster DNS (optional)
+
+Port: 53
+Description: DNS service for the cluster, both TCP and UDP.
+Protocol: TCP/UDP
+Worker Node Ports
+Kubelet API
+
+Port: 10250
+Description: Kubelet API for managing and configuring the nodes.
+Protocol: TCP
+NodePort Services
+
+Port: 30000-32767
+Description: Range of ports used by NodePort services to expose applications on the nodes.
+Protocol: TCP/UDP
+Kube-proxy
+
+Port: 10256
+Description: Kube-proxy metrics and health checking.
+Protocol: TCP
+Container Runtime (e.g., Docker)
+
+Port: 2375-2376 (only if using Docker)
+Description: Port for Docker daemon (usually secured).
+Protocol: TCP
+Pod Network
+
+Port: Varies
+Description: Depends on the CNI (Container Network Interface) plugin used (e.g., Flannel, Calico). Ensure that your security group rules allow communication on the ports and protocols required by your chosen CNI plugin.

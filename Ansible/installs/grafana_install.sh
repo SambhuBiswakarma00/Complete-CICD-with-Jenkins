@@ -14,4 +14,7 @@ echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stab
 sudo apt-get update
 
 # Installs the latest OSS release:
-sudo apt-get install grafana
+sudo apt-get install grafana -y
+
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
