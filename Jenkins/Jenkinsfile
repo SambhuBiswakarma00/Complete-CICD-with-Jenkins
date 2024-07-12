@@ -3,6 +3,7 @@ pipeline {
     agent any
     environment {
         // Define any environment variables here
+        SCANNER_HOME = tool 'sonar-scanner'
         DOCKER_IMAGE = 'myapp:latest'
     }
     stages {
@@ -14,7 +15,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('sonar') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=myApp -Dsonar.projectKey=myApp \
-                            -Dsonar.java.binaries=. '''
+                            -Dsonar.sources=website '''
                 }
             }
         }
@@ -41,7 +42,7 @@ pipeline {
         
         stage('Docker Image Scan') {
             steps {
-                sh "trivy image --format table -o trivy-image-report.html sambhubiswakarma00/myApp:latest "
+                sh "trivy image --format table -o trivy-myApp-image-report.html sambhubiswakarma00/myApp:latest "
             }
         }
         
