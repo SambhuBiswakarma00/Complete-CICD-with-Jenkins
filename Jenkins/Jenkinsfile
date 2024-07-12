@@ -7,15 +7,28 @@ pipeline {
         DOCKER_IMAGE = 'myapp:latest'
     }
     stages {
+        // This stage is to get the source codes for our project from github
         stage('Git Checkout') {
-            git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/SambhuBiswakarma00/Complete-CICD-with-Jenkins.git'
+            steps {
+                // if we don't specify the dir() directive, then all the contents of website repo will be directly copied to jenkins job dir root dir 
+                // '$JENKINS_HOME/workspace/Job/'. so, here we create separate folders for eache repo we want to copy. Here, it will create two folders website and cicd
+
+                dir('website') {
+                        git 'https://github.com/SambhuBiswakarma00/website.git'
+                    }
+                    
+                    dir('cicd') {
+                        git 'https://github.com/SambhuBiswakarma00/Complete-CICD-with-Jenkins.git'
+                    }
+            }
         }
 
         stage('SonarQube Analsyis') {
             steps {
                 withSonarQubeEnv('sonar') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=myApp -Dsonar.projectKey=myApp \
-                            -Dsonar.sources=website '''
+                            -Dsonar.sources=website 
+                    '''
                 }
             }
         }
@@ -34,7 +47,7 @@ pipeline {
             steps {
                script {
                    withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                            sh "docker build -t sambhubiswakarma00/myApp:latest ."
+                            sh "docker build -t sambhubiswakarma00/myApp:latest website"
                     }
                }
             }
@@ -58,7 +71,8 @@ pipeline {
         stage('Deploy To Kubernetes') {
             steps {
                 withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'k8-cred', namespace: 'myApp', restrictKubeConfigAccess: false, serverUrl: 'https://172.31.8.146:6443') {
-                            sh "kubectl apply -f deployment-service.yaml"
+                            sh "kubectl apply -f cicd/kubernetes/deployment.yaml"
+                            sh "kubectl apply -f cicd/kubernetes/service.yaml"
                 }
             }
         }
@@ -99,11 +113,11 @@ pipeline {
                 emailext (
                     subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
                     body: body,
-                    to: 'jaiswaladi246@gmail.com',
-                    from: 'jenkins@example.com',
-                    replyTo: 'jenkins@example.com',
+                    to: 'B170026@nitsikkim.ac.in',
+                    from: 'biswakarmasambhu@gmail.com',
+                    replyTo: 'biswakarmasambhu@gmail.com'',
                     mimeType: 'text/html',
-                    attachmentsPattern: 'trivy-image-report.html'
+                    attachmentsPattern: 'trivy-myApp-image-report.html'
                 )
             }
         }

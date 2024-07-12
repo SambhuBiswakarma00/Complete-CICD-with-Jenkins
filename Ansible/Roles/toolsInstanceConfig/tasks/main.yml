@@ -18,3 +18,5 @@
   script: installs/loki_install.sh
 - name: Installing grafana on tools Instance
   script: installs/grafana_install.sh
+- name: Installing kubectl on tools Instance
+  script: installs/kubectl_install.sh
