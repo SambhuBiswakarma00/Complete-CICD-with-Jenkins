@@ -1,0 +1,11 @@
+# Cluster creation with Kubeadm
+
+- Install the kubeadm. You can find the installtion command in Terraform/Installs/kube_and_java_install.sh
+- Once the installation is complete, we need to initialize the Control-Plane node of the cluster using "kubeadm init" command.
+- You need to follow the instructions provided on the terminal after the control-plane is initialized successfully.
+- To make kubectl work for your non-root user, run these commands, which are also part of the kubeadm init output:
+  ```
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+  ```
