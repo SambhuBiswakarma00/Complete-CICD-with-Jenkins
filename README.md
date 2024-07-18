@@ -16,6 +16,8 @@ The CI/CD pipeline automates the process of building, testing, and deploying the
 
 
 ## Tools and Technologies
+- IaC: Terraform
+- CM: Ansible
 - Version Control: GitHub
 - CI/CD: Jenkins
 - Code Quality: SonarQube
@@ -38,15 +40,16 @@ Tool: Docker, Trivy
 Description:
 Build: Creates a Docker image of the application.
 Scan: Trivy scans the Docker image for vulnerabilities.
-4. Kubernetes Cluster Creation
+After scan, push it to CR.
+5. Kubernetes Cluster Creation
 Description:
 Tool: Kubernetes
-Process: Sets up a Kubernetes cluster for deploying the application.
-5. Deployment
+Process: Sets up a Kubernetes cluster for deploying the application. In our project, we are creating K8 cluster using Kubeadm.
+6. Deployment
 Description:
 Tool: Kubernetes
 Process: Deploys the Dockerized application to the Kubernetes cluster.
-6. Monitoring
+7. Monitoring
 Tools: Prometheus, Loki, Grafana
 Description:
 Prometheus: Collects and stores metrics.
@@ -55,6 +58,8 @@ Grafana: Provides a unified dashboard for visualizing metrics and logs.
 
 ## Setup Instructions
 ### Prerequisites
+- Terraform
+- Ansible
 - Docker
 - Kubernetes
 - Jenkins
@@ -64,6 +69,8 @@ Grafana: Provides a unified dashboard for visualizing metrics and logs.
 - Prometheus, Loki, Grafana Stack
 
 ### Steps
+- Infrastructure creation with Terraform
+- Configuring necessary softwares using Ansible
 - Clone the Repository
 - Configure Jenkins
   - Set up Jenkins with the necessary plugins for GitHub, Docker, SonarQube, and Kubernetes.
@@ -76,6 +83,7 @@ Grafana: Provides a unified dashboard for visualizing metrics and logs.
 - Build Docker Image
   - Create a Dockerfile for the application.
   - Use Jenkins to build and scan the Docker image with Trivy.
+  - Push the docker image to CR.
 - Kubernetes Cluster
   - Set up a Kubernetes cluster.
   - Use kubeaudit to scan the cluster for security issues.
