@@ -1,9 +1,9 @@
 --- 
-# - hosts: cluster_all_nodes
+# - hosts: master_node
 #   remote_user: ubuntu
 #   become: 'yes'
 #   roles:
-#     - clusterConfiguration
+#     - Roles/clusterConfiguration
 
 - hosts: tools_instance
   remote_user: ubuntu

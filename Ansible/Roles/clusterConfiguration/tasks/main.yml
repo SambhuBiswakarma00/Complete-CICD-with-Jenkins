@@ -1,3 +1,4 @@
+---
 - name: Installing java on kubernetes cluster nodes
   script: installs/java_install.sh
 - name: Installing kube on kubernetes cluster nodes

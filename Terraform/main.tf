@@ -233,7 +233,35 @@ resource "aws_instance" "kubeMaster" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/kube_and_java_install.sh")
+  # user_data = file("Installs/kube_and_java_install.sh")
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              # this section is for installing java for jenkins dependencies
+              sudo apt install openjdk-11-jdk -y
+
+
+              #installing docker for kubeadm
+              sudo apt install docker.io -y
+
+              sudo systemctl start docker
+              sudo systemctl enable docker
+
+              # Installing kubeadm
+              # apt-transport-https may be a dummy package; if so, you can skip that package
+              sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+              # If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+              sudo mkdir -p -m 755 /etc/apt/keyrings
+              curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+              # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+              echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+              sudo apt-get update
+              sudo apt-get install -y kubelet kubeadm kubectl
+              sudo apt-mark hold kubelet kubeadm kubectl
+              EOF
   tags = {
      Name = "kube-master"
   }
@@ -247,7 +275,35 @@ resource "aws_instance" "slave1" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/kube_and_java_install.sh")
+  # user_data = file("Installs/kube_and_java_install.sh")
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              # this section is for installing java for jenkins dependencies
+              sudo apt install openjdk-11-jdk -y
+
+
+              #installing docker for kubeadm
+              sudo apt install docker.io -y
+
+              sudo systemctl start docker
+              sudo systemctl enable docker
+
+              # Installing kubeadm
+              # apt-transport-https may be a dummy package; if so, you can skip that package
+              sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+              # If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+              sudo mkdir -p -m 755 /etc/apt/keyrings
+              curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+              # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+              echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+              sudo apt-get update
+              sudo apt-get install -y kubelet kubeadm kubectl
+              sudo apt-mark hold kubelet kubeadm kubectl
+              EOF
   tags = {
     Name = "kube-slave-1"
   }
@@ -260,7 +316,35 @@ resource "aws_instance" "slave2" {
   subnet_id = aws_subnet.my_private_subnet1.id
   vpc_security_group_ids = [aws_security_group.my_security_group.id]
   key_name = "newkeypair"
-  user_data = file("Installs/kube_and_java_install.sh")
+  # user_data = file("Installs/kube_and_java_install.sh")
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              # this section is for installing java for jenkins dependencies
+              sudo apt install openjdk-11-jdk -y
+
+
+              #installing docker for kubeadm
+              sudo apt install docker.io -y
+
+              sudo systemctl start docker
+              sudo systemctl enable docker
+
+              # Installing kubeadm
+              # apt-transport-https may be a dummy package; if so, you can skip that package
+              sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+
+              # If the directory `/etc/apt/keyrings` does not exist, it should be created before the curl command, read the note below.
+              sudo mkdir -p -m 755 /etc/apt/keyrings
+              curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+              # This overwrites any existing configuration in /etc/apt/sources.list.d/kubernetes.list
+              echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+              sudo apt-get update
+              sudo apt-get install -y kubelet kubeadm kubectl
+              sudo apt-mark hold kubelet kubeadm kubectl
+              EOF
   tags = {
     Name = "kube-slave-2"
   }
