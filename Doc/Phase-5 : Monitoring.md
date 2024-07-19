@@ -128,6 +128,8 @@ Run Loki:
      nohup sudo ./loki-linux-amd64 -config.file=loki-local-config.yaml &> prometheus.log &
     ```
 
+**Note** : While Loki itself doesn't scrape logs, you can add targets to your Promtail configuration to specify which logs to collect and send to Loki. The scrape_configs section in promtail-config.yaml allows you to define multiple log sources.
+
 ## Step 3: Install Grafana
 
 Install Grafana:
