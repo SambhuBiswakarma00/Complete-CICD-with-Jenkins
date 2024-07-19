@@ -28,33 +28,35 @@ The CI/CD pipeline automates the process of building, testing, and deploying the
 - Cluster Security: Kubeaudit
 - Monitoring and Logging: Prometheus, Loki, Grafana
 
-## Pipeline Stages
-1. Code Quality Analysis
+## Pipeline Flow
+1. Git checkout
+Tool: git
+Description: Get the codes from github.
+
+2. Code Quality Analysis
 Tool: SonarQube
 Description: Analyzes the source code for potential bugs, vulnerabilities, and code smells.
-2. Vulnerability Scanning
-Tool: Trivy
-Description: Scans the codebase for known vulnerabilities before containerization.
-3. Docker Build and Scan
+
+3. Docker Build, Scan and push
 Tool: Docker, Trivy
 Description:
-Build: Creates a Docker image of the application.
-Scan: Trivy scans the Docker image for vulnerabilities.
-After scan, push it to CR.
-5. Kubernetes Cluster Creation
-Description:
+ - Build: Creates a Docker image of the application.
+ - Scan: Trivy scans the Docker image for vulnerabilities.
+ - After scan, push it to CR.
+4. Deployment
 Tool: Kubernetes
-Process: Sets up a Kubernetes cluster for deploying the application. In our project, we are creating K8 cluster using Kubeadm.
-6. Deployment
-Description:
-Tool: Kubernetes
-Process: Deploys the Dockerized application to the Kubernetes cluster.
+Description: Deploys the Dockerized application to the Kubernetes cluster.
+
+5. Email Notification
+Tool: smtp notification
+Description: send the trivy report as email notification.
+
 7. Monitoring
 Tools: Prometheus, Loki, Grafana
 Description:
-Prometheus: Collects and stores metrics.
-Loki: Aggregates and stores logs.
-Grafana: Provides a unified dashboard for visualizing metrics and logs.
+  - Prometheus: Collects and stores metrics.
+  - Loki: Aggregates and stores logs.
+  - Grafana: Provides a unified dashboard for visualizing metrics and logs.
 
 ## Setup Instructions
 ### Prerequisites
@@ -89,6 +91,7 @@ Grafana: Provides a unified dashboard for visualizing metrics and logs.
   - Use kubeaudit to scan the cluster for security issues.
 - Deploy to Kubernetes
   - Deploy the Docker image to the Kubernetes cluster using kubectl.
+- Send the trivy scan report through email notification.
 - Set Up Monitoring
   - Deploy Prometheus, Loki, and Grafana to the Kubernetes cluster.
   - Configure Grafana dashboards for monitoring application performance and logs.
