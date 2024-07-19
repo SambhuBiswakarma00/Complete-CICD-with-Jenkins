@@ -17,4 +17,4 @@ sudo apt-get update
 sudo apt-get install grafana -y
 
 sudo systemctl daemon-reload
-sudo systemctl start grafana-server
+# sudo systemctl start grafana-server
