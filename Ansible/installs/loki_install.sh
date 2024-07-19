@@ -11,4 +11,4 @@ sudo unzip promtail-linux-amd64.zip
 wget https://raw.githubusercontent.com/grafana/loki/v3.1.0/cmd/loki/loki-local-config.yaml
 wget https://raw.githubusercontent.com/grafana/loki/v3.1.0/clients/cmd/promtail/promtail-local-config.yaml
 
-nohup sudo ./loki-linux-amd64 -config.file=loki-local-config.yaml &> prometheus.log &
+# nohup sudo ./loki-linux-amd64 -config.file=loki-local-config.yaml &> prometheus.log &
