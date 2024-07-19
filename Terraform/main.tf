@@ -127,6 +127,13 @@ resource "aws_security_group" "my_security_group" {
     cidr_blocks = ["0.0.0.0/0"]  
     description = "Allow inbound kube-apiserver"
   }
+ ingress {
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+    description = "traffic for email notification"
+  }
   // Outbound rules
   egress {
     from_port   = 0  
