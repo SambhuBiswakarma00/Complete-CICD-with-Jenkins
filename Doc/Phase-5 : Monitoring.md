@@ -12,41 +12,87 @@ Configure Prometheus:
 - Create a prometheus.yml configuration file.
     ```
     global:
-      scrape_interval: 15s
+      scrape_interval: 15s # How often to scrape targets by default
     
-    scrape_configs:
-      - job_name: 'prometheus'
+   # scrape_configs:
+      - job_name: 'your_job_name' # Name of the scrape job
         static_configs:
-          - targets: ['localhost:9090']
+          - targets: ['localhost:9090'] # Targets to scrape metrics from (Prometheus itself)
     ```
 Run Prometheus:
 - Start Prometheus with the custom configuration file.
     ```
      nohup sudo ./prometheus &> prometheus.log &
     ```
-    
+- Runs the Prometheus server as a background process.
+- Redirects all output and errors to prometheus.log.
+- Ensures the process continues running even if you log out of the session.
+
 ## Step 2: Install Loki
 
-Download Loki:
-- Download the latest Loki release from the Loki releases page.This step has already be done with ansible in phase 1.
+Download Loki and promtail:
+- Download the latest Loki and promtail release from the Loki releases page.This step has already be done with ansible in phase 1. We need promtail as log shipper to collect logs from specfic targets.
 
-  
+Download Promtail:
+Download the latest Promtail release from the Loki releases page.
+    ```
+    wget https://github.com/grafana/loki/releases/download/v2.7.1/promtail-linux-amd64.zip
+    unzip promtail-linux-amd64.zip
+    chmod a+x promtail-linux-amd64
+    ```
+Configure Promtail:
+- cd to loki_promtail dir
+- Create a promtail-config.yaml file to specify how and where Promtail collects logs and where to send them.
+      
+     ```
+    server:
+      http_listen_port: 9080
+      grpc_listen_port: 0
+    
+    positions:
+      filename: /tmp/positions.yaml
+    
+    clients:
+      - url: http://localhost:3100/loki/api/v1/push # Loki server endpoint
+    
+    scrape_configs:
+      - job_name: system
+        static_configs:
+          - targets:
+              - localhost
+            labels:
+              job: varlogs
+              __path__: /var/log/*.log # Path to log files to collect
+    
+      - job_name: my_app_logs
+        static_configs:
+          - targets:
+              - localhost
+            labels:
+              job: my_app
+              __path__: /path/to/my/app/logs/*.log # Path to application log files to collect
+    ```
+- Run Promtail with the custom configuration file.
+    ```
+    sudo ./promtail-linux-amd64 -config.file=promtail-config.yaml
+    ```
+
 Configure Loki:
 - cd to loki_promtail dir
 - Create a loki-config.yaml configuration file.
     ```
-    auth_enabled: false
+    auth_enabled: false # Disable authentication for the Loki server
     
     server:
-      http_listen_port: 3100
+      http_listen_port: 3100 # Port where Loki will listen for incoming requests
     
     ingester:
       lifecycler:
         ring:
           kvstore:
-            store: inmemory
-          replication_factor: 1
-      chunk_idle_period: 5m
+            store: inmemory # Store the ring information in-memory
+          replication_factor: 1  # Number of times data is replicated
+      chunk_idle_period: 5m # How long to wait before closing an idle chunk
       chunk_retain_period: 30s
       max_transfer_retries: 0
     
@@ -100,14 +146,14 @@ Start Grafana with the custom configuration file.
 ## Step 4: Configure Grafana to use Prometheus and Loki as Data Sources
 
 Add Prometheus Data Source:
-- Open Grafana in your web browser (http://localhost:3000) and log in (default user: admin, password: admin).
+- Open Grafana in your web browser (http://server_ip:8080)
 - Go to Configuration -> Data Sources -> Add data source.
-- Select Prometheus and set the URL to http://localhost:9090.
+- Select Prometheus and set the URL to http://prometheus_server_ip:9090.
 - Save & test the data source.
 
 Add Loki Data Source:
 - Go to Configuration -> Data Sources -> Add data source.
-- Select Loki and set the URL to http://localhost:3100.
+- Select Loki and set the URL to http://loki_server_ip:3100.
 - Save & test the data source.
 
 ## Step 5: Create Dashboards in Grafana
