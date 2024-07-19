@@ -8,7 +8,8 @@ and secure deployment process.
 The CI/CD pipeline automates the process of building, testing, and deploying the application. It ensures code quality, security, and reliability throughout the development lifecycle.
 
 ## Pipeline Architecture
-![cicd architecture drawio (2)](https://github.com/user-attachments/assets/89c29746-598d-4050-9ec0-0698b7d778df)
+![cicd architecture drawio (3)](https://github.com/user-attachments/assets/8ed652b8-5e3f-4fed-8bc1-e76fcc714c4e)
+
 
 
 
